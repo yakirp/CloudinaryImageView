@@ -1,4 +1,4 @@
-About Cloudinary
+![Image](https://res.cloudinary.com/cloudinary/image/upload/b_rgb:ffffff,c_scale,w_200/v1/logo/for_white_bg/cloudinary_logo_for_white_bg.png)
 ---	
 [Cloudinary](https://cloudinary.com/) is a Software-as-a-Service (SaaS) solution for managing all your web or mobile application’s media assets in the cloud. Cloudinary offers an end-to-end solution for all your image and video needs, including upload, storage, administration, manipulation and delivery. Media upload, processing, and delivery are done on Cloudinary’s servers and automatically scale for handling high load and bursts of traffic.
 
