@@ -9,7 +9,7 @@ CloudinaryImageView simplifies and automate the process of selecting the optimal
 First impressions matter.
 CloudinaryImageView also automate the process of creating LQIP display mechanism which could increase your application UX, by generating extremely low-size image with approximately size of 200 byte. 
 Images are an integral part of any moobile app experience, but sometimes they can be slow to download and display. 
-This is especially true on low-connectivity or mobile networks, which often leave you staring at an empty gray box as you wait for images to download. 
+This is especially true on low-connectivity mobile networks, which often leave you staring at an empty placeholder or a loading spinner as you wait for images to download. 
 This is a problem in developing markets such as India, where many users are primarily using 2G networks.
 
 ## Usage
