@@ -9,7 +9,7 @@ CloudinaryImageView simplifies and automate the process of selecting the optimal
 First impressions matter.
 CloudinaryImageView automate the process of creating LQIP display mechanism which could increase your application UX, by generating extremely low-size image with approximately size of 200 byte.
 
-# Usage
+## Usage
 Add the CloudinaryImageView to the layout:
 
 ```
