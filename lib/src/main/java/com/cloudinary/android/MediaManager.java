@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Configuration;
@@ -22,6 +23,11 @@ import com.cloudinary.android.policy.GlobalUploadPolicy;
 import com.cloudinary.android.policy.UploadPolicy;
 import com.cloudinary.android.signed.SignatureProvider;
 import com.cloudinary.utils.StringUtils;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.backends.okhttp3.OkHttpImagePipelineConfigFactory;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.facebook.network.connectionclass.ConnectionClassManager;
+import com.facebook.network.connectionclass.ConnectionQuality;
 
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -29,11 +35,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.OkHttpClient;
+
 /**
  * Main class used as entry point to any operation against Cloudinary. Use {@link MediaManager#get()} to get an instance.
  * Must be initialized before use, see {@link #init(Context, SignatureProvider, Map)}.
  */
-public class MediaManager {
+public class MediaManager implements ConnectionClassManager.ConnectionClassStateChangeListener {
     public static final String VERSION = "1.23.0";
     public static final String INTENT_EXTRA_REQUEST_ID = "INTENT_EXTRA_REQUEST_ID";
     public static final String INTENT_EXTRA_REQUEST_RESULT_STATUS = "INTENT_EXTRA_REQUEST_RESULT_STATUS";
@@ -49,6 +57,8 @@ public class MediaManager {
     private final CallbackDispatcher callbackDispatcher;
     private final SignatureProvider signatureProvider;
     private final ExecutorService executor;
+    private Context context;
+
 
     private GlobalUploadPolicy globalUploadPolicy = GlobalUploadPolicy.defaultPolicy();
 
@@ -56,7 +66,7 @@ public class MediaManager {
         executor = new ThreadPoolExecutor(3, 10,
                 60L, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<Runnable>(200));
-
+        setContext(context);
         // use context to initialize components but DO NOT store it
         BackgroundRequestStrategy strategy = BackgroundStrategyProvider.provideStrategy();
         callbackDispatcher = new DefaultCallbackDispatcher(context);
@@ -162,6 +172,15 @@ public class MediaManager {
 
             if (_instance == null) {
                 _instance = new MediaManager(context, provider, config);
+                OkHttpClient okHttpClient = new OkHttpClient();
+                final ImagePipelineConfig imagePipelineConfig = OkHttpImagePipelineConfigFactory.newBuilder(
+                       context,okHttpClient).setNetworkFetcher(new CloudinaryHttpNetworkFetcher(okHttpClient))
+                      .build();
+                Fresco.initialize(context, imagePipelineConfig);
+
+
+
+                ConnectionClassManager.getInstance().register(_instance);
             } else {
                 throw new IllegalStateException("MediaManager is already initialized");
             }
@@ -375,5 +394,18 @@ public class MediaManager {
 
     void execute(Runnable runnable) {
         executor.execute(runnable);
+    }
+
+    @Override
+    public void onBandwidthStateChange(ConnectionQuality bandwidthState) {
+
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    private void setContext(Context context) {
+        this.context = context;
     }
 }

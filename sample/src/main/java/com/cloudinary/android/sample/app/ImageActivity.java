@@ -16,11 +16,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cloudinary.android.CloudinaryImageView;
 import com.cloudinary.android.sample.R;
 import com.cloudinary.android.sample.core.CloudinaryHelper;
 import com.cloudinary.android.sample.model.EffectData;
@@ -48,15 +48,14 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+
 
 import java.util.List;
 
 public class ImageActivity extends AppCompatActivity {
     public static final int UPLOAD_IMAGE_REQUEST_CODE = 1001;
     public static final String RESOURCE_INTENT_EXTRA = "RESOURCE_INTENT_EXTRA";
-    private ImageView imageView;
+    private CloudinaryImageView imageView;
     private Resource resource;
     private RecyclerView recyclerView;
     private int thumbHeight;
@@ -77,7 +76,7 @@ public class ImageActivity extends AppCompatActivity {
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
-        imageView = (ImageView) findViewById(R.id.image_view);
+        imageView = (CloudinaryImageView) findViewById(R.id.image_view);
         descriptionTextView = (TextView) findViewById(R.id.effectDescription);
         recyclerView = (RecyclerView) findViewById(R.id.effectsGallery);
         recyclerView.setHasFixedSize(true);
@@ -203,6 +202,10 @@ public class ImageActivity extends AppCompatActivity {
         exoPlayerView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
         imageView.setTag(data.getImageUrl());
+        //TODO::fix
+
+        imageView.setImageURI(data.getImageUrl());
+        /*
         new Picasso.Builder(this).listener(new Picasso.Listener() {
             @Override
             public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
@@ -219,6 +222,7 @@ public class ImageActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
             }
         });
+        */
     }
 
     @Override

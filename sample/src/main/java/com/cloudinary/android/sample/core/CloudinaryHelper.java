@@ -23,15 +23,17 @@ import java.util.Map;
 public class CloudinaryHelper {
     public static String uploadResource(Resource resource, boolean preprocess) {
         UploadRequest request = MediaManager.get().upload(Uri.parse(resource.getLocalUri()))
-                .unsigned("sample_app_preset")
+              //   .unsigned("hrva757h")
+
+              .unsigned("unsigned")
                 .constrain(TimeWindow.immediate())
                 .option("resource_type", "auto")
                 .maxFileSize(100 * 1024 * 1024) // max 100mb
                 .policy(MediaManager.get().getGlobalUploadPolicy().newBuilder().maxRetries(10).build());
         if (preprocess) {
             // scale down images above 2000 width/height, and re-encode as webp with 80 quality to save bandwidth
-            request.preprocess(ImagePreprocessChain.limitDimensionsChain(2000, 2000)
-                    .saveWith(new BitmapEncoder(BitmapEncoder.Format.WEBP, 80)));
+       //   request.preprocess(ImagePreprocessChain.limitDimensionsChain(2000, 2000)
+         //        .saveWith(new BitmapEncoder(BitmapEncoder.Format.WEBP, 80)));
 
         }
 
@@ -96,23 +98,23 @@ public class CloudinaryHelper {
 
         thumbUrl = getUrlForTransformation(new Transformation().aspectRatio(40, 30).height(thumbHeight).crop("thumb").gravity("faces").effect("sharpen", 250), resource);
         imageUrl = getUrlForTransformation(new Transformation().aspectRatio(40, 30).width(screenWidth).crop("thumb").gravity("faces").effect("sharpen", 250), resource);
-        effects.add(new EffectData(thumbUrl, imageUrl, context.getString(R.string.effect_name_sharpen), context.getString(R.string.effect_desc_face_sharpen)));
+        effects.add(new EffectData(thumbUrl, imageUrl, context.getString(R.string.effect_name_sharpen), context.getString(R.string.effect_desc_face_sharpen),new Transformation().aspectRatio(40, 30).crop("thumb").gravity("faces").effect("sharpen", 250),resource.getCloudinaryPublicId()));
 
         thumbUrl = getUrlForTransformation(new Transformation().aspectRatio(40, 30).height(thumbHeight).crop("thumb").gravity("faces").effect("oil_paint", 100), resource);
         imageUrl = getUrlForTransformation(new Transformation().aspectRatio(40, 30).width(screenWidth).crop("thumb").gravity("faces").effect("oil_paint", 100), resource);
-        effects.add(new EffectData(thumbUrl, imageUrl, context.getString(R.string.effect_name_oil_paint), context.getString(R.string.effect_desc_face_oilpaint)));
+        effects.add(new EffectData(thumbUrl, imageUrl, context.getString(R.string.effect_name_oil_paint), context.getString(R.string.effect_desc_face_oilpaint),new Transformation().aspectRatio(40, 30).crop("thumb").gravity("faces").effect("oil_paint", 100),resource.getCloudinaryPublicId()));
 
         thumbUrl = getUrlForTransformation(new Transformation().aspectRatio(50, 100).height(thumbHeight).crop("thumb").gravity("faces").effect("sepia"), resource);
         imageUrl = getUrlForTransformation(new Transformation().aspectRatio(50, 100).width(screenWidth).crop("thumb").gravity("faces").effect("sepia"), resource);
-        effects.add(new EffectData(thumbUrl, imageUrl, context.getString(R.string.effect_name_sepia), context.getString(R.string.effect_desc_narrow_sepia)));
+        effects.add(new EffectData(thumbUrl, imageUrl, context.getString(R.string.effect_name_sepia), context.getString(R.string.effect_desc_narrow_sepia),new Transformation().aspectRatio(50, 100).crop("thumb").gravity("faces").effect("sepia"),resource.getCloudinaryPublicId()));
 
         thumbUrl = getUrlForTransformation(new Transformation().crop("scale").radius(50).effect("saturation", 100).height(thumbHeight), resource);
         imageUrl = getUrlForTransformation(new Transformation().crop("scale").radius(50).effect("saturation", 100).width(screenWidth), resource);
-        effects.add(new EffectData(thumbUrl, imageUrl, context.getString(R.string.effect_name_round_corners), context.getString(R.string.effect_desc_face_sat_round)));
+        effects.add(new EffectData(thumbUrl, imageUrl, context.getString(R.string.effect_name_round_corners), context.getString(R.string.effect_desc_face_sat_round),new Transformation().crop("scale").radius(50).effect("saturation", 100),resource.getCloudinaryPublicId()));
 
         thumbUrl = getUrlForTransformation(new Transformation().aspectRatio(100, 50).height(thumbHeight).crop("thumb").gravity("faces").effect("blue:100"), resource);
         imageUrl = getUrlForTransformation(new Transformation().aspectRatio(100, 50).width(screenWidth).crop("thumb").gravity("faces").effect("blue:100"), resource);
-        effects.add(new EffectData(thumbUrl, imageUrl, context.getString(R.string.effect_name_blue), context.getString(R.string.effect_desc_wide_blue)));
+        effects.add(new EffectData(thumbUrl, imageUrl, context.getString(R.string.effect_name_blue), context.getString(R.string.effect_desc_wide_blue),new Transformation().aspectRatio(100, 50).crop("thumb").gravity("faces").effect("blue:100"),resource.getCloudinaryPublicId()));
 
         return effects;
     }
@@ -125,28 +127,28 @@ public class CloudinaryHelper {
         String imageUrl;
         int width = screenWidth / 3;
 
-        thumbUrl = getUrlForTransformation(new Transformation().angle(20).height(thumbHeight), resource, videoThumbFormat);
+        thumbUrl = getUrlForTransformation(new Transformation().angle(20).height(thumbHeight).quality("auto:low"), resource, videoThumbFormat);
         imageUrl = getUrlForTransformation(new Transformation().angle(20).width(width), resource);
         effects.add(new EffectData(thumbUrl, imageUrl, context.getString(R.string.effect_video_name_rotation), context.getString(R.string.effect_video_rotate)));
 
-        thumbUrl = getUrlForTransformation(new Transformation().effect("fade", 1000).height(thumbHeight), resource, videoThumbFormat);
+        thumbUrl = getUrlForTransformation(new Transformation().effect("fade", 1000).height(thumbHeight).quality("auto:low"), resource, videoThumbFormat);
         imageUrl = getUrlForTransformation(new Transformation().effect("fade", 1000).width(width), resource);
         effects.add(new EffectData(thumbUrl, imageUrl, context.getString(R.string.effect_video_name_fade_in), context.getString(R.string.effect_video_fade_in)));
 
-        thumbUrl = getUrlForTransformation(new Transformation().crop("scale").height(thumbHeight), resource, videoThumbFormat);
+        thumbUrl = getUrlForTransformation(new Transformation().crop("scale").height(thumbHeight).quality("auto:low"), resource, videoThumbFormat);
         Object overlayWidth = width / 3;
         imageUrl = getUrlForTransformation(new Transformation().crop("scale").width(width).chain().overlay("video:" + resource.getCloudinaryPublicId()).width(overlayWidth).gravity("north_east"), resource);
         effects.add(new EffectData(thumbUrl, imageUrl, context.getString(R.string.effect_video_name_overlay), context.getString(R.string.effect_desc_video_overlay)));
 
-        thumbUrl = getUrlForTransformation(new Transformation().crop("scale").height(thumbHeight).effect("noise", 50), resource, videoThumbFormat);
+        thumbUrl = getUrlForTransformation(new Transformation().crop("scale").height(thumbHeight).quality("auto:low").effect("noise", 50), resource, videoThumbFormat);
         imageUrl = getUrlForTransformation(new Transformation().crop("scale").width(width).effect("noise", 50), resource);
         effects.add(new EffectData(thumbUrl, imageUrl, context.getString(R.string.effect_video_name_noise), context.getString(R.string.effect_desc_video_noise)));
 
-        thumbUrl = getUrlForTransformation(new Transformation().crop("scale").height(thumbHeight).effect("blur", 200), resource, videoThumbFormat);
+        thumbUrl = getUrlForTransformation(new Transformation().crop("scale").height(thumbHeight).quality("auto:low").effect("blur", 200), resource, videoThumbFormat);
         imageUrl = getUrlForTransformation(new Transformation().crop("scale").width(width).effect("blur", 200), resource);
         effects.add(new EffectData(thumbUrl, imageUrl, context.getString(R.string.effect_video_name_blur), context.getString(R.string.effect_desc_video_blur)));
 
-        thumbUrl = getUrlForTransformation(new Transformation().crop("scale").height(thumbHeight).effect("reverse"), resource, videoThumbFormat);
+        thumbUrl = getUrlForTransformation(new Transformation().crop("scale").height(thumbHeight).quality("auto:low").effect("reverse"), resource, videoThumbFormat);
         imageUrl = getUrlForTransformation(new Transformation().crop("scale").width(width).effect("reverse"), resource);
         effects.add(new EffectData(thumbUrl, imageUrl, context.getString(R.string.effect_video_name_reverse), context.getString(R.string.effect_desc_video_reverse)));
 

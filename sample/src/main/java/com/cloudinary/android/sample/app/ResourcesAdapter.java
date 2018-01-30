@@ -11,11 +11,12 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.cloudinary.Transformation;
+import com.cloudinary.android.CloudinaryImageView;
 import com.cloudinary.android.sample.R;
 import com.cloudinary.android.sample.core.CloudinaryHelper;
 import com.cloudinary.android.sample.model.Resource;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,7 +111,7 @@ class ResourcesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         });
 
-        return new FailedResourceViewHolder(viewGroup, (TextView) viewGroup.findViewById(R.id.filename), (ImageView) viewGroup.findViewById(R.id.image_view), retryButton, cancelButton, viewGroup.findViewById(R.id.rescheduleLabel), (TextView) viewGroup.findViewById(R.id.errorDescription));
+        return new FailedResourceViewHolder(viewGroup, (TextView) viewGroup.findViewById(R.id.filename), (CloudinaryImageView) viewGroup.findViewById(R.id.image_view), retryButton, cancelButton, viewGroup.findViewById(R.id.rescheduleLabel), (TextView) viewGroup.findViewById(R.id.errorDescription));
     }
 
     private RecyclerView.ViewHolder createRegularViewHolder(ViewGroup parent) {
@@ -148,7 +149,7 @@ class ResourcesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             }
         });
-        return new ResourceViewHolder(viewGroup, (ImageView) viewGroup.findViewById(R.id.image_view), (TextView) viewGroup.findViewById(R.id.statusText),
+        return new ResourceViewHolder(viewGroup, (CloudinaryImageView) viewGroup.findViewById(R.id.image_view), (TextView) viewGroup.findViewById(R.id.statusText),
                 deleteButton, viewGroup.findViewById(R.id.buttonsContainer), viewGroup.findViewById(R.id.videoIcon), (ProgressBar) viewGroup.findViewById(R.id.uploadProgress),
                 viewGroup.findViewById(R.id.black_overlay), (TextView) viewGroup.findViewById(R.id.filename), cancelRequest);
     }
@@ -159,11 +160,19 @@ class ResourcesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         holder.errorDescription.setText(resource.getLastErrorDesc());
         boolean isVideo = resource.getResourceType().equals("video");
         int placeHolder = isVideo ? R.drawable.video_placeholder : R.drawable.placeholder;
-        Picasso.with(context).load(resource.getLocalUri()).placeholder(placeHolder).centerCrop().resizeDimen(R.dimen.card_image_width, R.dimen.card_height).into(holder.imageView);
+
+       // Picasso.with(context).load(resource.getLocalUri()).placeholder(placeHolder).centerCrop().resizeDimen(R.dimen.card_image_width, R.dimen.card_height).into(holder.imageView);
+        holder.imageView.setImagePublicId(resource.getCloudinaryPublicId(), new Transformation().angle(30));
+
         holder.retryButton.setTag(resource);
         holder.cancelButton.setTag(resource);
         holder.rescheduleLabel.setVisibility(resource.getStatus() == Resource.UploadStatus.RESCHEDULED ? View.VISIBLE : View.GONE);
         holder.filename.setText(resource.getName());
+
+
+
+
+
     }
 
     private void bindRegularView(ResourceViewHolder holder, int position) {
@@ -227,6 +236,12 @@ class ResourcesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 break;
         }
 
+
+        holder.progressBar.setVisibility(View.INVISIBLE);
+        holder.imageView.setImagePublicId(resource.getCloudinaryPublicId(),new Transformation().angle(45));
+
+             /*
+
         int placeholder = resource.getResourceType().equals("image") ? R.drawable.placeholder : R.drawable.video_placeholder;
 
         RequestCreator creator = Picasso.with(context).load(uriToLoad).placeholder(placeholder);
@@ -246,7 +261,8 @@ class ResourcesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else {
             holder.progressBar.setProgress(0);
             holder.progressBar.setVisibility(View.INVISIBLE);
-        }
+        }*/
+
     }
 
     private void setProgressText(double progressFraction, TextView statusText) {
@@ -334,7 +350,7 @@ class ResourcesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private static class ResourceViewHolder extends RecyclerView.ViewHolder {
-        private final ImageView imageView;
+        private final CloudinaryImageView imageView;
         private final TextView statusText;
         private final View deleteButton;
         private final View buttonsContainer;
@@ -344,7 +360,7 @@ class ResourcesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private final TextView name;
         private final View cancelRequest;
 
-        ResourceViewHolder(final View itemView, final ImageView imageView, TextView statusText, View deleteButton, View buttonsContainer, View videoIcon, ProgressBar progressBar, View blackOverlay, TextView name, View cancelRequest) {
+        ResourceViewHolder(final View itemView, final CloudinaryImageView imageView, TextView statusText, View deleteButton, View buttonsContainer, View videoIcon, ProgressBar progressBar, View blackOverlay, TextView name, View cancelRequest) {
             super(itemView);
             this.imageView = imageView;
             this.statusText = statusText;
@@ -360,13 +376,13 @@ class ResourcesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static class FailedResourceViewHolder extends RecyclerView.ViewHolder {
         private final TextView filename;
-        private final ImageView imageView;
+        private final CloudinaryImageView imageView;
         private final View retryButton;
         private final View rescheduleLabel;
         private final TextView errorDescription;
         private final View cancelButton;
 
-        FailedResourceViewHolder(View itemView, TextView filename, ImageView imageView, View cancelButton, View retryButton, View rescheduleLabel, TextView errorDescription) {
+        FailedResourceViewHolder(View itemView, TextView filename, CloudinaryImageView imageView, View cancelButton, View retryButton, View rescheduleLabel, TextView errorDescription) {
             super(itemView);
             this.filename = filename;
             this.imageView = imageView;

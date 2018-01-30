@@ -5,12 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+
 import android.widget.TextView;
 
+import com.cloudinary.android.CloudinaryImageView;
 import com.cloudinary.android.sample.R;
 import com.cloudinary.android.sample.model.EffectData;
-import com.squareup.picasso.Picasso;
+
 
 import java.util.List;
 
@@ -47,7 +48,7 @@ class EffectsGalleryAdapter extends RecyclerView.Adapter<EffectsGalleryAdapter.I
             }
         });
 
-        ImageView imageView = (ImageView) viewGroup.findViewById(R.id.image_view);
+        CloudinaryImageView imageView = (CloudinaryImageView) viewGroup.findViewById(R.id.image_view);
         imageView.getLayoutParams().height = requiredSize;
         return new EffectsGalleryAdapter.ImageViewHolder(viewGroup, imageView, viewGroup.findViewById(R.id.selected_indicator), (TextView) viewGroup.findViewById(R.id.effectName));
     }
@@ -58,7 +59,11 @@ class EffectsGalleryAdapter extends RecyclerView.Adapter<EffectsGalleryAdapter.I
         String url = data.getThumbUrl();
         holder.itemView.setTag(images.get(position));
         holder.nameTextView.setText(data.getName());
-        Picasso.with(context).load(url).placeholder(R.drawable.placeholder).into(holder.imageView);
+
+        holder.imageView.setImagePublicId(data.getPublicId(),data.getTransformation());
+
+
+       // Picasso.with(context).load(url).placeholder(R.drawable.placeholder).into(holder.imageView);
 
         if (selected != null && selected.equals(data)) {
             holder.selection.setVisibility(View.VISIBLE);
@@ -77,11 +82,11 @@ class EffectsGalleryAdapter extends RecyclerView.Adapter<EffectsGalleryAdapter.I
     }
 
     public static class ImageViewHolder extends RecyclerView.ViewHolder {
-        private final ImageView imageView;
+        private final CloudinaryImageView imageView;
         private final View selection;
         private final TextView nameTextView;
 
-        ImageViewHolder(final View itemView, final ImageView imageView, View selection, TextView nameTextView) {
+        ImageViewHolder(final View itemView, final CloudinaryImageView imageView, View selection, TextView nameTextView) {
             super(itemView);
             this.imageView = imageView;
             this.selection = selection;

@@ -19,7 +19,7 @@ import java.util.Map;
  * This utility class provides an abstraction layer for sending multipart HTTP
  * POST requests to a web server.
  *
- * @author www.codejava.net
+ * @author www.codejava.CloudinaryHttpNetworkFetcher
  * @author Cloudinary
  */
 public class MultipartUtility {

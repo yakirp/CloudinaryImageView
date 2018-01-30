@@ -34,7 +34,6 @@ import com.cloudinary.android.sample.model.Resource;
 import com.cloudinary.android.sample.persist.ResourceRepo;
 import com.cloudinary.utils.StringUtils;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.PicassoTools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -351,7 +350,7 @@ public class MainActivity extends AppCompatActivity implements ResourcesAdapter.
     public void onDeleteAllLocally() {
         ResourceRepo.getInstance().clear();
         MediaManager.get().cancelAllRequests();
-        PicassoTools.clearCache(Picasso.with(this));
+      //  PicassoTools.clearCache(Picasso.with(this));
 
         for (AbstractPagerFragment fragment : getPages()) {
             fragment.clearData();

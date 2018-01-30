@@ -37,6 +37,15 @@ android {
 }
 
 dependencies {
+    compile 'com.facebook.fresco:fresco:1.7.1'
+    compile 'com.facebook.fresco:animated-webp:1.7.1'
+    compile 'com.facebook.fresco:webpsupport:1.7.1'
+    compile 'com.squareup.okhttp3:okhttp:3.9.1'
+    compile "com.facebook.fresco:imagepipeline-okhttp3:1.7.1"
+    compile 'com.facebook.network.connectionclass:connectionclass:1.0.1'
+    compile 'com.facebook.device.yearclass:yearclass:2.0.0'
+
+
     api "com.cloudinary:cloudinary-core:${cloudinaryLibsVersion}"
 
     implementation "com.android.support:support-v4:${androidSupportVersion}"
